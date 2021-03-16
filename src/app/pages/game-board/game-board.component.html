@@ -1,4 +1,5 @@
-<h2>Remaining Mines: {{ remainingMines }}</h2>
+<h2>Remaining Mines: {{ remainingMines > 0 ? remainingMines : 0 }}</h2>
+<h2>Time Elapsed: {{ timeElapsed }}</h2>
 <div class="container game-board">
   <div *ngFor="let col of tiles" class="board-column">
     <div *ngFor="let tile of col" class="board-row">

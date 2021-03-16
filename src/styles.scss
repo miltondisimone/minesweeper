@@ -1,6 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
-
-body {
-    background-color: #e6e6e6;
-    font-family: monospace;
+header, body {
+    background-color: #e6e6e6 !important;
+    font-family: monospace !important;
 }
+
+.btn {
+    border-radius: 0 !important;
+}
+
+.modal-content {
+    border-radius: 0 !important;
+}
+
+a {
+    font-size: 18px;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import '~bootstrap/scss/bootstrap';

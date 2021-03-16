@@ -1,0 +1,17 @@
+<table class="table" *ngIf="rankList">
+  <thead>
+    <tr>
+      <th scope="col">Result</th>
+      <th scope="col">Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let rank of rankList; let i = index;">
+      <td>{{ rank.result }}</td>
+      <td>{{ rank.time }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 class="mt-4" *ngIf="!rankList">No registries</h1>
+<a routerLink="game-setup"  >Back</a>

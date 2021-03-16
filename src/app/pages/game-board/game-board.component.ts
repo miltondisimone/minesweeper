@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ITile } from '../../models/tile.model';
-import { difficultySettings} from '../../constants/difficulty-settings.component';
+import { difficultySettings } from '../../constants/difficulty-settings.component';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { EndGameMessageComponent } from 'src/app/components/end-game-message/end-game-message.component';
+import { HistoryService } from 'src/app/services/history.service';
 
 @Component({
   selector: 'app-game-board',
@@ -18,8 +21,16 @@ export class GameBoardComponent implements OnInit {
   mines: number;
   gameOver = false;
   remainingMines: number;
+  minesDefused = 0;
+  timeElapsed = 0;
+  interval;
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private modalService: NgbModal,
+    private historyService: HistoryService
+  ) {}
 
   ngOnInit(): void {
     this.setDifficulty();
@@ -48,15 +59,20 @@ export class GameBoardComponent implements OnInit {
   }
 
   setDifficulty() {
-    const { rows, columns, mines, difficultySelect } = this.activatedRoute.snapshot.params;
-    if(difficultySelect === 'custom') {
-      this.rows = rows;
-      this.columns = columns;
-      this.mines = mines;
+    const {
+      rows,
+      columns,
+      mines,
+      difficultySelect,
+    } = this.activatedRoute.snapshot.params;
+    if (difficultySelect === 'custom') {
+      this.rows = Number(rows);
+      this.columns = Number(columns);
+      this.mines = Number(mines);
     } else {
-      this.rows = difficultySettings[difficultySelect].rows;
-      this.columns = difficultySettings[difficultySelect].columns;
-      this.mines = difficultySettings[difficultySelect].mines;
+      this.rows = Number(difficultySettings[difficultySelect].rows);
+      this.columns = Number(difficultySettings[difficultySelect].columns);
+      this.mines = Number(difficultySettings[difficultySelect].mines);
     }
     this.remainingMines = this.mines;
   }
@@ -65,6 +81,7 @@ export class GameBoardComponent implements OnInit {
     if (this.minesSetted < this.mines) {
       tile.isDiscovered = true;
       this.setMines(tile);
+      this.startTimer();
     } else {
       if (tile.hasFlag) {
         return;
@@ -75,6 +92,10 @@ export class GameBoardComponent implements OnInit {
         tile.isDiscovered = true;
         if (tile.hasMine) {
           this.gameOver = true;
+          this.openEndMessageModal('You loose!');
+          clearInterval(this.interval);
+          const match = { result: 'Lost', time: this.timeElapsed };
+          this.historyService.saveRanking(match);
           return;
         }
         this.checkMinesAround(tile);
@@ -95,28 +116,58 @@ export class GameBoardComponent implements OnInit {
       }
     }
 
-    if(!tile.minesAround) {
+    if (!tile.minesAround) {
       for (let i = -1; i < 2; i++) {
         for (let o = -1; o < 2; o++) {
           if (
             this.tiles[tile.column + i] &&
             this.tiles[tile.column + i][tile.row + o]
           ) {
-            this.tileClicked(this.tiles[tile.column + i][tile.row + o])
+            this.tileClicked(this.tiles[tile.column + i][tile.row + o]);
           }
         }
       }
     }
+    this.checkGameStatus();
   }
 
   tileRightClicked($event: MouseEvent, tile: ITile) {
     $event.preventDefault();
-    console.log('click derecho', tile);
     if (!tile.isDiscovered) {
       tile.hasFlag = !tile.hasFlag;
+      tile.hasFlag ? (this.remainingMines -= 1) : (this.remainingMines += 1);
+      if (tile.hasFlag && tile.hasMine) {
+        this.minesDefused += 1;
+      } else if (!tile.hasFlag && tile.hasMine) {
+        this.minesDefused -= 1;
+      }
+      this.checkGameStatus();
     }
-    if(tile.hasFlag) {
-      this.remainingMines ? this.remainingMines -= 1 : 0;
+  }
+
+  openEndMessageModal(gameResult: string) {
+    const modalRef = this.modalService.open(EndGameMessageComponent);
+
+    modalRef.componentInstance.gameResult = gameResult;
+
+    modalRef.result.then(
+      (result) => {
+        result === 'retry'
+          ? window.location.reload()
+          : this.router.navigate(['game-setup']);
+      },
+      () => {
+        this.router.navigate(['game-setup']);
+      }
+    );
+  }
+
+  private checkGameStatus() {
+    if (this.minesDefused === this.mines) {
+      this.openEndMessageModal('You win!');
+      clearInterval(this.interval);
+      const match = { result: 'Won', time: this.timeElapsed };
+      this.historyService.saveRanking(match);
     }
   }
 
@@ -140,4 +191,10 @@ export class GameBoardComponent implements OnInit {
   private getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min)) + min;
   };
+
+  private startTimer() {
+    this.interval = setInterval(() => {
+      this.timeElapsed += 1;
+    },1000)
+  }
 }

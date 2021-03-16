@@ -6,14 +6,21 @@
   >
     <div class="form-group difficulty-select">
       <label for="difficultySelect">Difficulty</label>
-      <select class="form-control" formControlName="difficultySelect" (change)="updateDifficultyForm($event.target.value)">
+      <select
+        class="form-control"
+        formControlName="difficultySelect"
+        (change)="updateDifficultyForm($event.target.value)"
+      >
         <option value="easy">Easy</option>
         <option value="medium">Medium</option>
         <option value="hard">Hard</option>
         <option value="custom">Custom</option>
       </select>
     </div>
-    <div class="custom-config-wrapper" *ngIf="difficultyForm.value.difficultySelect === 'custom'">
+    <div
+      class="custom-config-wrapper"
+      *ngIf="difficultyForm.value.difficultySelect === 'custom'"
+    >
       <div class="form-group">
         <label for="boardRows">Rows</label>
         <input
@@ -48,8 +55,14 @@
         />
       </div>
     </div>
-    <button [disabled]="!difficultyForm.valid" type="button" class="btn btn-primary play-btn" type="submit">
+    <button
+      [disabled]="!difficultyForm.valid"
+      type="button"
+      class="btn btn-primary play-btn"
+      type="submit"
+    >
       Let's play!
     </button>
   </form>
+  <a routerLink="/ranking">Ranking</a>
 </div>
