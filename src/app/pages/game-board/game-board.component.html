@@ -1,0 +1,22 @@
+<h2>Remaining Mines: {{ remainingMines }}</h2>
+<div class="container game-board">
+  <div *ngFor="let col of tiles" class="board-column">
+    <div *ngFor="let tile of col" class="board-row">
+      <div
+        class="tile"
+        (click)="tileClicked(tile)"
+        (contextmenu)="tileRightClicked($event, tile)"
+        [ngClass]="{
+          'has-flag': tile.hasFlag,
+          explode: tile.isDiscovered && tile.hasMine,
+          'is-discovered': tile.isDiscovered && !tile.hasMine && !tile.hasFlag
+        }"
+      >
+        <span class="number">{{ tile.minesAround || null }}</span>
+      </div>
+    </div>
+    <br />
+  </div>
+</div>
+
+<h2 *ngIf="gameOver">You loose!</h2>

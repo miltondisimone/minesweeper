@@ -1,0 +1,31 @@
+.game-setup {
+    padding: 2rem;
+    margin-top: 5rem;
+    text-align: center;
+    .difficulty-form {
+        .difficulty-select {
+            width: 8rem;
+            margin: auto;
+            label {
+                font-size: 1.4rem;
+            }
+        }
+        .custom-difficulty-check {
+            width: 10rem;
+            margin: auto;
+        }
+        .custom-config-wrapper {
+            margin-top: 1.5rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            .form-group {
+                margin: 0 1rem;
+            }
+        }
+        .play-btn {
+            margin: 2rem;
+            padding: 1rem;
+        }
+    }
+}

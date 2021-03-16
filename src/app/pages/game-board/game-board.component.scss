@@ -1,0 +1,43 @@
+:host {
+    margin-top: 3rem;
+    display: block;
+    .game-board {
+        display: flex;
+        margin-top: 2rem;
+        justify-content: center;
+        .board-column {
+            width: 2rem;
+            margin: 0 1px;
+            .board-row {
+                height: 2rem;
+                margin: 1px 0;
+                .tile {
+                    width: 2rem;
+                    height: 2rem;
+                    background-color: lightblue;
+                    display: flex;
+                    &.has-flag {
+                        background-image: url('../../../assets/red-flag.png');
+                        background-size: cover;
+                        background-position-x: center;
+                        background-position-y: center;
+                    }
+                    &.explode {
+                        background-image: url('../../../assets/mine-explode.png');
+                        background-size: cover;
+                        background-position-x: center;
+                        background-position-y: center;
+                    }
+                    &.is-discovered {
+                        background-color: white;
+                    }
+                    .number {
+                        align-self: center;
+                        margin: auto;
+                    }
+                }
+            }
+        }
+    }
+}
+

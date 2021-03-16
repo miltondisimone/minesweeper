@@ -1,0 +1,55 @@
+<div class="game-setup container">
+  <form
+    class="difficulty-form"
+    [formGroup]="difficultyForm"
+    (ngSubmit)="startGame()"
+  >
+    <div class="form-group difficulty-select">
+      <label for="difficultySelect">Difficulty</label>
+      <select class="form-control" formControlName="difficultySelect" (change)="updateDifficultyForm($event.target.value)">
+        <option value="easy">Easy</option>
+        <option value="medium">Medium</option>
+        <option value="hard">Hard</option>
+        <option value="custom">Custom</option>
+      </select>
+    </div>
+    <div class="custom-config-wrapper" *ngIf="difficultyForm.value.difficultySelect === 'custom'">
+      <div class="form-group">
+        <label for="boardRows">Rows</label>
+        <input
+          type="number"
+          class="form-control"
+          id="rows"
+          aria-describedby="rows"
+          formControlName="rows"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Columns</label>
+        <input
+          type="number"
+          class="form-control"
+          id="columns"
+          aria-describedby="columns"
+          formControlName="columns"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="mines">Mines</label>
+        <input
+          type="number"
+          class="form-control"
+          id="mines"
+          aria-describedby="mines"
+          formControlName="mines"
+          [required]="true"
+        />
+      </div>
+    </div>
+    <button [disabled]="!difficultyForm.valid" type="button" class="btn btn-primary play-btn" type="submit">
+      Let's play!
+    </button>
+  </form>
+</div>
