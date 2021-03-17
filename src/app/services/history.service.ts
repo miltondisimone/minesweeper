@@ -8,13 +8,13 @@ export class HistoryService {
   constructor() { }
 
 
-  getRanking() {  
-    return JSON.parse(localStorage.getItem('ranking'));
+  getHistory() {  
+    return JSON.parse(localStorage.getItem('History'));
   }
 
-  saveRanking(matchReg) {
-    let currentMatchs = JSON.parse(localStorage.getItem('ranking')) || [];
+  saveHistory(matchReg) {
+    let currentMatchs = JSON.parse(localStorage.getItem('History')) || [];
     currentMatchs.push(matchReg);
-    localStorage.setItem('ranking', JSON.stringify(currentMatchs));
+    localStorage.setItem('History', JSON.stringify(currentMatchs));
   }
 }

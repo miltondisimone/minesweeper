@@ -5,4 +5,5 @@ export interface ITile {
   hasFlag: boolean;
   isDiscovered: boolean;
   minesAround: number;
+  minesAroundCovered: number
 }

@@ -7,7 +7,7 @@ import { HistoryComponent } from './pages/history/history.component';
 const routes: Routes = [
   { path: 'game-setup', component: GameSetupComponent},
   { path: 'game-board', component: GameBoardComponent},
-  { path: 'ranking', component: HistoryComponent},
+  { path: 'History', component: HistoryComponent},
   { path: '**', pathMatch: 'full', redirectTo: 'game-setup'},
 ];
 

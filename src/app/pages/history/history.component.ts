@@ -14,7 +14,7 @@ export class HistoryComponent implements OnInit {
   constructor(private historyService: HistoryService) { }
 
   ngOnInit(): void {
-    this.rankList = this.historyService.getRanking();
+    this.rankList = this.historyService.getHistory();
   }
 
 }

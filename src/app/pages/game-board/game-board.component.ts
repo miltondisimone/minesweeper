@@ -95,7 +95,7 @@ export class GameBoardComponent implements OnInit {
           this.openEndMessageModal('You loose!');
           clearInterval(this.interval);
           const match = { result: 'Lost', time: this.timeElapsed };
-          this.historyService.saveRanking(match);
+          this.historyService.saveHistory(match);
           return;
         }
         this.checkMinesAround(tile);
@@ -104,6 +104,9 @@ export class GameBoardComponent implements OnInit {
   }
 
   checkMinesAround(tile: ITile) {
+    tile.minesAround = 0;
+    tile.minesAroundCovered = 0;
+
     for (let i = -1; i < 2; i++) {
       for (let o = -1; o < 2; o++) {
         if (
@@ -112,11 +115,14 @@ export class GameBoardComponent implements OnInit {
           this.tiles[tile.column + i][tile.row + o].hasMine
         ) {
           tile.minesAround += 1;
+          if(this.tiles[tile.column + i][tile.row + o].hasFlag) {
+            tile.minesAroundCovered += 1;
+          }
         }
       }
     }
 
-    if (!tile.minesAround) {
+    if (!tile.minesAround || tile.minesAround === tile.minesAroundCovered) {
       for (let i = -1; i < 2; i++) {
         for (let o = -1; o < 2; o++) {
           if (
@@ -142,7 +148,13 @@ export class GameBoardComponent implements OnInit {
         this.minesDefused -= 1;
       }
       this.checkGameStatus();
+    } else {
+      this.checkTilesAround(tile);
     }
+  }
+
+  checkTilesAround(tile: ITile) {
+    this.checkMinesAround(tile);
   }
 
   openEndMessageModal(gameResult: string) {
@@ -167,19 +179,20 @@ export class GameBoardComponent implements OnInit {
       this.openEndMessageModal('You win!');
       clearInterval(this.interval);
       const match = { result: 'Won', time: this.timeElapsed };
-      this.historyService.saveRanking(match);
+      this.historyService.saveHistory(match);
     }
   }
 
   private setMines(tile: ITile) {
-    const randomRow = this.getRandomInt(0, this.columns);
-    const randomCol = this.getRandomInt(0, this.rows);
+    const randomCol = this.getRandomInt(0, this.columns);
+    const randomRow = this.getRandomInt(0, this.rows);
 
-    if (this.tiles[randomCol][randomRow].isDiscovered) {
+    if (this.tiles[randomCol][randomRow] === tile ||  this.tiles[randomCol][randomRow].hasMine) {
       this.setMines(tile);
     } else {
       this.tiles[randomCol][randomRow].hasMine = true;
       this.minesSetted += 1;
+      
       if (this.minesSetted < this.mines) {
         this.setMines(tile);
       } else {
@@ -195,6 +208,6 @@ export class GameBoardComponent implements OnInit {
   private startTimer() {
     this.interval = setInterval(() => {
       this.timeElapsed += 1;
-    },1000)
+    }, 1000);
   }
 }
