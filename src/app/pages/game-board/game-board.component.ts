@@ -83,12 +83,7 @@ export class GameBoardComponent implements OnInit {
       this.setMines(tile);
       this.startTimer();
     } else {
-      if (tile.hasFlag) {
-        return;
-      }
-      if (tile.isDiscovered) {
-        return;
-      } else {
+      if (!tile.hasFlag && !tile.isDiscovered) {
         tile.isDiscovered = true;
         if (tile.hasMine) {
           this.gameOver = true;
@@ -115,7 +110,7 @@ export class GameBoardComponent implements OnInit {
           this.tiles[tile.column + i][tile.row + o].hasMine
         ) {
           tile.minesAround += 1;
-          if(this.tiles[tile.column + i][tile.row + o].hasFlag) {
+          if (this.tiles[tile.column + i][tile.row + o].hasFlag) {
             tile.minesAroundCovered += 1;
           }
         }
@@ -187,12 +182,15 @@ export class GameBoardComponent implements OnInit {
     const randomCol = this.getRandomInt(0, this.columns);
     const randomRow = this.getRandomInt(0, this.rows);
 
-    if (this.tiles[randomCol][randomRow] === tile ||  this.tiles[randomCol][randomRow].hasMine) {
+    if (
+      this.tiles[randomCol][randomRow] === tile ||
+      this.tiles[randomCol][randomRow].hasMine
+    ) {
       this.setMines(tile);
     } else {
       this.tiles[randomCol][randomRow].hasMine = true;
       this.minesSetted += 1;
-      
+
       if (this.minesSetted < this.mines) {
         this.setMines(tile);
       } else {
